@@ -16,6 +16,7 @@
 #include "EthernetClient.h"
 #include "EthernetServer.h"
 #include "Dhcp.h"
+#include "TcpListener.h"
 
 enum phyMode_t {
   HALF_DUPLEX_10,
@@ -107,6 +108,8 @@ public:
 
   friend class EthernetClient;
   friend class EthernetServer;
+  friend class TcpListener;
+  friend class TcpServerConnection;
 };
 
 extern EthernetClass Ethernet;
