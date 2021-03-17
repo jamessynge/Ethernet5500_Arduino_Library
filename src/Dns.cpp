@@ -199,6 +199,19 @@ uint16_t DNSClient::BuildRequest(const char* aName)
     // FIXME than assume there's enough space (as the code does at present)
     iUdp.write((uint8_t*)&iRequestId, sizeof(iRequestId));
 
+/*
+Error reported by Arduino IDE 1.8.13:
+
+In file included from /home/james/Arduino/libraries/Ethernet3/src/Dns.cpp:7:0:
+/home/james/Arduino/libraries/Ethernet3/src/Dns.cpp: In member function 'uint16_t DNSClient::BuildRequest(const char*)':
+/home/james/Arduino/libraries/Ethernet3/src/utility/util.h:4:24: warning: result of '(256 << 8)' requires 18 bits to represent, but 'int' only has 16 bits [-Wshift-overflow=]
+ #define htons(x) ( ((x)<< 8 & 0xFF00) | \
+                     ~~~^~~~
+/home/james/Arduino/libraries/Ethernet3/src/Dns.cpp:202:21: note: in expansion of macro 'htons'
+     twoByteBuffer = htons(QUERY_FLAG | OPCODE_STANDARD_QUERY | RECURSION_DESIRED_FLAG);
+
+*/
+
     twoByteBuffer = htons(QUERY_FLAG | OPCODE_STANDARD_QUERY | RECURSION_DESIRED_FLAG);
     iUdp.write((uint8_t*)&twoByteBuffer, sizeof(twoByteBuffer));
 

@@ -122,5 +122,7 @@ void TcpServerConnection::close() {
 // Returns true if the socket is connected to a peer.
 bool TcpServerConnection::connected() const {
   auto hw_status = listener_.status();
+  // If this returns false, but listener_state_ is kConnected, should we
+  // change the state to kClosing?
   return hw_status == SnSR::ESTABLISHED || hw_status == SnSR::CLOSE_WAIT;
 }
