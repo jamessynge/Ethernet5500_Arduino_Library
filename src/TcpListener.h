@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+// #include "Arduino.h"	
+// #include "Print.h"
+#include "Stream.h"
+
 class TcpListener;
 
 class TcpServerConnection : public Stream
@@ -29,7 +33,7 @@ public:
   // Write one byte to the connection, returns 1 if successful, 0 if
   // unable to write.
   // TODO Figure out whether and if so how to provide blocking I/O.
-  size_t write(uint8_t) override;
+  size_t write(uint8_t b) override;
 
   // Write up to size bytes to the connection, returns the number of
   // bytes written.
@@ -39,16 +43,16 @@ public:
   void flush() override;
 
   // Closes the connection.
-  void stop();
+  void close();
 
   // Returns true if the socket is connected to a peer.
-  bool connected();
+  bool connected() const;
 
 private:
-  TcpServerConnection(TcpListener *listener)
+  TcpServerConnection(TcpListener& listener)
       : listener_(listener) {}
 
-  TcpListener *const listener_;
+  TcpListener& listener_;
 
   friend class TcpListener;
 };
@@ -61,8 +65,14 @@ public:
   // A TcpListener will listen on hardware socket 'sock_num' for TCP connections to
   // TCP port number 'port'. The constructor does NOT start the listening process.
   TcpListener(uint16_t port, uint8_t sock_num)
-      : connection_(this), port_(port), sock_num_(sock_num_),
+      : connection_(*this), port_(port), sock_num_(sock_num),
         listener_state_(kUninitialized) {}
+
+  // Returns True if this instance has configured the underlying socket to listen for new connections,
+  // and the caller has not accepted a new connection. I.e. this is true from the
+  // time that listen() is called, and until accept() returns a pointer to a TcpServerConnection
+  // instance.
+  // bool is_listening() const;
 
   // Starts or continues listening for connections to 'tcp_port_', returns true if successfully
   // configures the underlying socket.
@@ -74,27 +84,24 @@ public:
   // Returns true if currently connected (i.e. have already accepted a connection
   // and returned a TcpServerConnection, and that connection has not yet
   // been closed / stopped).
-  bool connected();
+  bool is_connected() const;
 
   // Returns the connection to a *new* client. Only returns this on the
   // first call to accept after a new connection is established, allowing
   // the caller to distinguish between new and ongoing connections.
   TcpServerConnection *accept();
 
-  // Returns again the current connection to a previously accepted client.
-  // Only returns non-nullptr after accept, and until the connection is closed.
-  TcpServerConnection *connection();
+  // Returns the current accepted connection. Only returns non-nullptr after accept, and until the connection is closed.
+  TcpServerConnection *get_connection();
 
   ListenerState listener_state() const { return listener_state_; }
 
+  // Close the listener socket and the current active connection, if there is one.
+  void close();
+
 private:
   // Value of the Socket 'sock_num_' Status Register (SnSR).
-  uint8_t status();
-
-  // Returns True if the actually listening
-  bool IsListening() const;
-
-
+  uint8_t status() const;
 
   // Embedded connection object returned by accept and connection.
   TcpServerConnection connection_;

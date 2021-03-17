@@ -1,95 +1,126 @@
 #include "TcpListener.h"
 
-#include "utility/w5500.h"
-#include "utility/socket.h"
-
-// Using the functions already implemented for EthernetClient, though that
-// could be changed.
 #include "Ethernet3.h"
 #include "EthernetClient.h"
+#include "utility/socket.h"
+#include "utility/w5500.h"
 
-namespace {
-bool IsListening
+// bool TcpListener::is_listening() const {
+//   if (listener_state_ != kListening ||
+//       EthernetClass::_server_port[sock_num_] != port_) {
+//     // *This* instance hasn't configured the socket to listen right now.
+//     return false;
+//   }
+//   auto sr = status();
+//   if (sr == SnSR::LISTEN)
+//     Pretty definitely Not listening.
+//       } &&
+//   EthernetClient client(sock_num_);
+//         status() == SnSR::LISTEN;
+// }
 
-
-}//namespace
-
-
-
-// Starts or continues listening for connections to 'tcp_port_', returns true if successfully
-// configures the underlying socket.
-// If the socket is already being used for
-// another purpose (e.g. there is an existing connection or is listening to a different port) AND force== true, that is replaced
-// with this new use (i.e. an existing connection is closed or broken).
 bool TcpListener::listen(bool force) {
-  if (force) {
-    EthernetClient client(sock_num_);
-    if (listener_state_ == kListening &&
-        EthernetClass::_server_port[sock_num_] == port_ &&
-        client.status() == SnSR::LISTEN) {
-      // Already listening.
-      return true;
-    }
-    // Close any existing connection.
-    client.stop();
-    // We can't continue using 'client' because it has cleared the socket number.
-  } else {
-    // Not forcing.
+  if ((listener_state_ == kListening || listener_state_ == kConnected) &&
+      EthernetClass::_server_port[sock_num_] == port_) {
+    // Already configured to listen. May have a connection.
+    return true;
   }
-
-
+  if (!force && listener_state_ != kClosing) {
+    // Is it already in use for some other purpose?
+    auto hw_status = status();
+    if (EthernetClass::_server_port[sock_num_] != 0 &&
+        hw_status != SnSR::INIT && hw_status != SnSR::CLOSED) {
+      // Apparently so.
+      return false;
+    }
+  }
+  // Close any existing connection,
+  close();
+  ::socket(sock_num_, SnMR::TCP, port_, 0);
+  ::listen(sock_num_);
+  // QUESTION: Should I check here whether the above worked?
+  return true;
 }
 
-// Returns true if currently connected (i.e. have already accepted a connection
-// and returned a TcpServerConnection, and that connection has not yet
-// been closed / stopped).
-bool TcpListener::connected();
+bool TcpListener::is_connected() const { return listener_state_ == kConnected; }
 
-// Returns the connection to a *new* client. Only returns this on the
-// first call to accept after a new connection is established, allowing
-// the caller to distinguish between new and ongoing connections.
-TcpServerConnection *TcpListener::accept();
+TcpServerConnection *TcpListener::accept() {
+  if (listener_state_ == kListening) {
+    // Has a connection been accepted by the hardware since the last call?
+    auto hw_status = status();
+    if (hw_status == SnSR::ESTABLISHED || hw_status == SnSR::CLOSE_WAIT) {
+      // Yup, got a new connection.
+      listener_state_ = kConnected;
+      return &connection_;
+    }
+  }
+  return nullptr;
+}
 
 // Returns again the current connection to a previously accepted client.
 // Only returns non-nullptr after accept, and until the connection is closed.
-TcpServerConnection *TcpListener::connection();
+TcpServerConnection *TcpListener::get_connection() {
+  if (listener_state_ == kConnected) {
+    return &connection_;
+  }
+  return nullptr;
+}
 
-ListenerState TcpListener::listener_state() const { return listener_state_; }
+void TcpListener::close() {
+  EthernetClient client(sock_num_);
+  client.stop();
+  listener_state_ = kClosing;
+}
 
+uint8_t TcpListener::status() const { return w5500.readSnSR(sock_num_); }
 
+int TcpServerConnection::available() {
+  return w5500.getRXReceivedSize(listener_.sock_num_);
+}
 
-// Returns the number of bytes available for reading, or -1 if a peer
-// is not connected or has closed their side of the connection.
-int TcpServerConnection::available() override;
+int TcpServerConnection::read() {
+  EthernetClient client(listener_.sock_num_);
+  return client.read();
+}
 
-// Returns the next byte from the connection. Returns -1 if there are
-// no bytes available currently, or if the connection has been closed.
-int TcpServerConnection::read() override;
-
-// Returns the next byte from the stream without consuming it. The next
-// call to read() will return the same value.
-int TcpServerConnection::peek() override;
+int TcpServerConnection::peek() {
+  EthernetClient client(listener_.sock_num_);
+  return client.peek();
+}
 
 // Reads up to size bytes from the connection, writing them into buf.
 // Returns the number of bytes read, i.e. zero or more. If none are
 // available for reading and the connection has been closed by the peer,
 // returns -1.
-int TcpServerConnection::read(uint8_t *buf, size_t size);
+int TcpServerConnection::read(uint8_t *buf, size_t size) {
+  return ::recv(listener_.sock_num_, buf, size);
+}
 
 // Write one byte to the connection, returns 1 if successful, 0 if
 // unable to write.
 // TODO Figure out whether and if so how to provide blocking I/O.
-size_t TcpServerConnection::write(uint8_t) override;
+size_t TcpServerConnection::write(uint8_t b) {
+  EthernetClient client(listener_.sock_num_);
+  return client.write(b);
+}
 
 // Write up to size bytes to the connection, returns the number of
 // bytes written.
-size_t TcpServerConnection::write(const uint8_t *buf, size_t size) override;
+size_t TcpServerConnection::write(const uint8_t *buf, size_t size) {
+  EthernetClient client(listener_.sock_num_);
+  return client.write(buf, size);
+}
 
 // Waits for the transmission of outgoing data to complete.
-void TcpServerConnection::flush() override;
+void TcpServerConnection::flush() { ::flush(listener_.sock_num_); }
 
 // Closes the connection.
-void TcpServerConnection::stop();
+void TcpServerConnection::close() {
+  listener_.close();
+}
 
 // Returns true if the socket is connected to a peer.
-bool TcpServerConnection::connected();
+bool TcpServerConnection::connected() const {
+  auto hw_status = listener_.status();
+  return hw_status == SnSR::ESTABLISHED || hw_status == SnSR::CLOSE_WAIT;
+}
