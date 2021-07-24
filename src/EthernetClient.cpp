@@ -156,7 +156,7 @@ uint8_t EthernetClient::connected() {
     (s == SnSR::CLOSE_WAIT && !available()));
 }
 
-uint8_t EthernetClient::status() {
+uint8_t EthernetClient::status()const {
   if (_sock == MAX_SOCK_NUM) return SnSR::CLOSED;
   return w5500.readSnSR(_sock);
 }
@@ -172,7 +172,7 @@ bool EthernetClient::operator==(const EthernetClient& rhs) {
   return _sock == rhs._sock && _sock != MAX_SOCK_NUM && rhs._sock != MAX_SOCK_NUM;
 }
 
-uint8_t EthernetClient::getSocketNumber() {
+uint8_t EthernetClient::getSocketNumber() const {
   return _sock;
 }
 

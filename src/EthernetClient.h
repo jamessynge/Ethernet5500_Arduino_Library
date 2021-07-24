@@ -1,5 +1,5 @@
-#ifndef ethernetclient_h
-#define ethernetclient_h
+#ifndef SRC_ETHERNETCLIENT_H
+#define SRC_ETHERNETCLIENT_H
 #include "Arduino.h"	
 #include "Print.h"
 #include "Client.h"
@@ -11,7 +11,7 @@ public:
   EthernetClient();
   EthernetClient(uint8_t sock);
 
-  uint8_t status();
+  uint8_t status() const;
   virtual int connect(IPAddress ip, uint16_t port);
   virtual int connect(const char *host, uint16_t port);
   virtual size_t write(uint8_t);
@@ -28,7 +28,7 @@ public:
   virtual bool operator!=(const bool value) { return bool() != value; }
   virtual bool operator==(const EthernetClient&);
   virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); };
-  uint8_t getSocketNumber();
+  uint8_t getSocketNumber() const;
 
   // Return the IP address of the host who sent the current incoming packet
   virtual void remoteIP(uint8_t *ip);
@@ -51,4 +51,4 @@ private:
   uint8_t _sock;
 };
 
-#endif
+#endif // SRC_ETHERNETCLIENT_H
