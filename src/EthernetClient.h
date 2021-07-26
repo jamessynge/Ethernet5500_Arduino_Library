@@ -1,9 +1,9 @@
 #ifndef SRC_ETHERNETCLIENT_H
 #define SRC_ETHERNETCLIENT_H
-#include "Arduino.h"	
-#include "Print.h"
-#include "Client.h"
-#include "IPAddress.h"
+#include <Arduino.h>	
+#include <Print.h>
+#include <Client.h>
+#include <IPAddress.h>
 
 class EthernetClient : public Client {
 

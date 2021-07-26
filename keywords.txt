@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-Ethernet3	KEYWORD1
+Ethernet	KEYWORD1
 EthernetClient	KEYWORD1
 EthernetServer	KEYWORD1
 IPAddress	KEYWORD1

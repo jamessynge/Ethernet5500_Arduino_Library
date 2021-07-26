@@ -7,12 +7,12 @@
  by Arduino.org team
 
  */
-#ifndef ethernet3_h
-#define ethernet3_h
+#ifndef ethernet5500_h
+#define ethernet5500_h
 
 #include <inttypes.h>
 #include "utility/w5500.h"
-#include "IPAddress.h"
+#include <IPAddress.h>
 #include "EthernetClient.h"
 #include "EthernetServer.h"
 #include "Dhcp.h"

@@ -32,9 +32,9 @@
 
 #include "utility/w5500.h"
 #include "utility/socket.h"
-#include "Ethernet3.h"
-#include "Udp.h"
-#include "Dns.h"
+#include "Ethernet5500.h"
+#include <Udp.h>
+#include <Dns.h>
 
 /* Constructor */
 EthernetUDP::EthernetUDP() : _sock(MAX_SOCK_NUM) {}

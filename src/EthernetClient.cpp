@@ -5,12 +5,12 @@ extern "C" {
   #include "string.h"
 }
 
-#include "Arduino.h"
+#include <Arduino.h>
 
-#include "Ethernet3.h"
+#include "Ethernet5500.h"
 #include "EthernetClient.h"
 #include "EthernetServer.h"
-#include "Dns.h"
+#include <Dns.h>
 
 uint16_t EthernetClient::_srcport = 49152; //Use IANA recommended ephemeral port range 49152-65535
 
