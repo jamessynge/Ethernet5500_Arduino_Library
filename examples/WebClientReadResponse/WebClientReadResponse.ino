@@ -2,7 +2,7 @@
 //Web: https://arduino.php5.sk
 //Support: http://paypal.me/chlebovec
 #include <SPI.h>
-#include <Ethernet3.h>
+#include <Ethernet5500.h>
 const int led = 6;
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 char serverName[] = "www.arduino.php5.sk"; // webserver

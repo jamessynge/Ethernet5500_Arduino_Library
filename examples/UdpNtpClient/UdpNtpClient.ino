@@ -17,8 +17,8 @@
  */
 
 #include <SPI.h>
-#include <Ethernet3.h>
-#include <EthernetUdp3.h>
+#include <Ethernet5500.h>
+#include <EthernetUdp5500.h>
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield

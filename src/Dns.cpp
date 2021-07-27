@@ -3,7 +3,7 @@
 // Released under Apache License, version 2.0
 
 #include "utility/w5500.h"
-#include "EthernetUdp3.h"
+#include "EthernetUdp5500.h"
 #include "utility/util.h"
 
 #include "Dns.h"

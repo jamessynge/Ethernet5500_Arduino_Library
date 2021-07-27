@@ -21,7 +21,7 @@
  by Tom Igoe
  */
 
-#include <Ethernet3.h>
+#include <Ethernet5500.h>
 // the sensor communicates using SPI, so include the library:
 #include <SPI.h>
 

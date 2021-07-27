@@ -40,8 +40,8 @@
  */
  
 
-#ifndef ethernetudp3_h
-#define ethernetudp3_h
+#ifndef ethernetudp5500_h
+#define ethernetudp5500_h
 
 #include <Udp.h>
 

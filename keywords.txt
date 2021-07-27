@@ -10,7 +10,7 @@ Ethernet	KEYWORD1
 EthernetClient	KEYWORD1
 EthernetServer	KEYWORD1
 IPAddress	KEYWORD1
-EthernetUdp3	KEYWORD1
+EthernetUdp	KEYWORD1
 DNS	KEYWORD1
 DCHP	KEYWORD1
 Twitter	KEYWORD1
