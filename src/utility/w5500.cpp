@@ -25,7 +25,7 @@ SPISettings wiznet_SPI_settings(8000000, MSBFIRST, SPI_MODE0);
 uint8_t SPI_CS;
 
 void W5500Class::set_chip_select_pin(uint8_t cs_pin)  {
-  SPI_CS = ss_pin;
+  SPI_CS = cs_pin;
   initSS();
 }
 

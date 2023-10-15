@@ -325,12 +325,12 @@ void flush(SOCKET s) {
 
 uint16_t igmpsend(SOCKET s, const uint8_t * buf, uint16_t len)
 {
-  uint8_t status=0;
+  uint8_t status=0 __attribute__((unused));
   uint16_t ret=0;
 
-  if (len > w5500.SSIZE) 
+  if (len > w5500.SSIZE)
     ret = w5500.SSIZE; // check size not to exceed MAX size.
-  else 
+  else
     ret = len;
 
   if (ret == 0)
@@ -339,7 +339,7 @@ uint16_t igmpsend(SOCKET s, const uint8_t * buf, uint16_t len)
   w5500.send_data_processing(s, (uint8_t *)buf, ret);
   w5500.execCmdSn(s, Sock_SEND);
 
-  while ( (w5500.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK ) 
+  while ( (w5500.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK )
   {
     status = w5500.readSnSR(s);
     if (w5500.readSnIR(s) & SnIR::TIMEOUT)
@@ -376,7 +376,7 @@ int startUDP(SOCKET s, uint8_t* addr, uint16_t port)
     (
      ((addr[0] == 0x00) && (addr[1] == 0x00) && (addr[2] == 0x00) && (addr[3] == 0x00)) ||
      ((port == 0x00))
-    ) 
+    )
   {
     return 0;
   }
@@ -391,9 +391,9 @@ int startUDP(SOCKET s, uint8_t* addr, uint16_t port)
 int sendUDP(SOCKET s)
 {
   w5500.execCmdSn(s, Sock_SEND);
-		
+
   /* +2008.01 bj */
-  while ( (w5500.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK ) 
+  while ( (w5500.readSnIR(s) & SnIR::SEND_OK) != SnIR::SEND_OK )
   {
     if (w5500.readSnIR(s) & SnIR::TIMEOUT)
     {
@@ -403,7 +403,7 @@ int sendUDP(SOCKET s)
     }
   }
 
-  /* +2008.01 bj */	
+  /* +2008.01 bj */
   w5500.writeSnIR(s, SnIR::SEND_OK);
 
   /* Sent ok */
