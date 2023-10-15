@@ -325,7 +325,7 @@ void flush(SOCKET s) {
 
 uint16_t igmpsend(SOCKET s, const uint8_t * buf, uint16_t len)
 {
-  uint8_t status=0 __attribute__((unused));
+  uint8_t status __attribute__((unused)) = 0;
   uint16_t ret=0;
 
   if (len > w5500.SSIZE)
