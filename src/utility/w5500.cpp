@@ -27,6 +27,9 @@ uint8_t SPI_CS;
 void W5500Class::set_chip_select_pin(uint8_t cs_pin)  {
   SPI_CS = cs_pin;
   initSS();
+  // Initialize the SPI bus, but doesn't touch the chip select line;
+  // that is handled by the write method.
+  SPI.begin();
 }
 
 void W5500Class::init(uint8_t socketNumbers, uint8_t cs_pin, uint16_t delay_ms)
@@ -36,9 +39,6 @@ void W5500Class::init(uint8_t socketNumbers, uint8_t cs_pin, uint16_t delay_ms)
   if (delay_ms > 0) {
     delay(delay_ms);
   }
-  // Initialize the SPI bus, but doesn't touch the chip select line;
-  // that is handled by the write method.
-  SPI.begin();
 
   if(socketNumbers == 1) {
     for (int i = 1; i < MAX_SOCK_NUM; i++) {
