@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2010 by WIZnet <support@wiznet.co.kr>
+ * Copyright (c) 2010 by WIZnet <support@wiznet.co.kr>
  *
  * This file is free software; you can redistribute it and/or modify
  * it under the terms of either the GNU General Public License version 2
@@ -9,6 +9,13 @@
  * - 10 Apr. 2015
  * Added support for Arduino Ethernet Shield 2
  * by Arduino.org team
+ *
+ * - 2023-10-15
+ * Add W5500Class::set_chip_select_pin, enabling W5500Class::softReset to
+ * be called before W5500Class::init. Add delay_ms parameter to
+ * W5500Class::init, so we can reduce the current 1 second delay when init
+ * is called, which doesn't seem justified by the timing diagrams.
+ * by James Synge
  */
 
 #ifndef	W5500_H_INCLUDED
@@ -131,7 +138,13 @@ public:
 class W5500Class {
 
 public:
-  void init(uint8_t socketNumbers, uint8_t ss_pin = 10);
+  // TODO(jamessynge): Figure out whether all of the methods can be changed to 'static';
+  // there don't appear to be any instance member variables, nor any support for multiple
+  // instances of this class, so declaring methods as static will reduce the overhead of
+  // calling the methods (i.e. no 'this' pointer will be implicitly passed).
+
+  void set_chip_select_pin(uint8_t cs_pin = 10);
+  void init(uint8_t socketNumbers, uint8_t cs_pin = 10, uint16_t delay_ms=100);
   static uint8_t softReset(void);
   uint8_t readVersion(void);
 

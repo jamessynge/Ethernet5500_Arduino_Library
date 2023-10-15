@@ -6,6 +6,9 @@
  Added support for Arduino Ethernet Shield 2
  by Arduino.org team
 
+- 2023-10-15
+ Call W5500Class::set_chip_select_pin() from setCsPin.
+ by James Synge.
  */
 
 #include "Ethernet5500.h"
@@ -20,8 +23,12 @@ void EthernetClass::setRstPin(uint8_t pinRST) {
   pinMode(_pinRST, OUTPUT);
   digitalWrite(_pinRST, HIGH);
   }
+
 void EthernetClass::setCsPin(uint8_t pinCS) {
+  // TODO(jamessynge): Can we get rid of _pinCS, and just require that
+  // this method be called (approximately) first?
   _pinCS = pinCS;
+  w5500.set_chip_select_pin(_pinCS);
   }
 
 void EthernetClass::init(uint8_t maxSockNum) {
@@ -122,7 +129,7 @@ int EthernetClass::begin(uint8_t *mac_address)
   {
     _dhcp->setCustomHostname(_customHostname);
   }
-  
+
   // Now try to get our config info from a DHCP server
   int ret = _dhcp->beginWithDHCP(mac_address);
   if(ret == 1)

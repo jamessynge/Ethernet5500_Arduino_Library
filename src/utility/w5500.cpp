@@ -24,12 +24,20 @@ W5500Class w5500;
 SPISettings wiznet_SPI_settings(8000000, MSBFIRST, SPI_MODE0);
 uint8_t SPI_CS;
 
-void W5500Class::init(uint8_t socketNumbers, uint8_t ss_pin)
-{
+void W5500Class::set_chip_select_pin(uint8_t cs_pin)  {
   SPI_CS = ss_pin;
-
-  delay(1000);
   initSS();
+}
+
+void W5500Class::init(uint8_t socketNumbers, uint8_t cs_pin, uint16_t delay_ms)
+{
+  set_chip_select_pin(cs_pin);
+
+  if (delay_ms > 0) {
+    delay(delay_ms);
+  }
+  // Initialize the SPI bus, but doesn't touch the chip select line;
+  // that is handled by the write method.
   SPI.begin();
 
   if(socketNumbers == 1) {

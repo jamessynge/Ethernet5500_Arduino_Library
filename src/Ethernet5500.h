@@ -6,6 +6,22 @@
  Added support for Arduino Ethernet Shield 2
  by Arduino.org team
 
+ - 2021-03-21
+ Allow caller to provide DHCP instance rather than always creating
+ one using operator new. This helps avoid dynamic memory allocation
+ which isn't very safe on tiny RAM systems.
+ by James Synge
+
+ - 2021-07
+ Rename from Ethernet3 (by https://github.com/sstaub) to Ethernet5500,
+ so that changes to the API won't cause confusion (i.e. different names
+ must be used).
+
+ - 2023-10-14
+ Change behavior of EthernetClass::setCsPin so that it calls the
+ corresponding method of W5500Class, i.e. set_chip_select_pin,
+ avoiding the need to call EthernetClass::begin prior to calling softreset.
+
  */
 #ifndef ethernet5500_h
 #define ethernet5500_h
@@ -42,8 +58,14 @@ public:
 
   EthernetClass() { _dhcp = NULL; _pinCS = 10; _maxSockNum = 8; }
 
-  void setRstPin(uint8_t pinRST = 9); // for WIZ550io or USR-ES1, must set befor Ethernet.begin
-  void setCsPin(uint8_t pinCS = 10); // must set befor Ethernet.begin
+  // Set the pin used for Hardware Reset. For WIZ550io or USR-ES1,
+  // must set befor Ethernet.begin.
+  void setRstPin(uint8_t pinRST = 9);
+
+  // Set the pin used for SPI chip-select (i.e. the pin pulled low to indicate
+  // that the WIZnet internet chip is the one that should pay attention to the
+  // 3 pin SPI bus). Must be called before Ethernet.begin or Ethernet.softreset.
+  void setCsPin(uint8_t pinCS = 10);
 
   // Sets the DhcpClass instance to be used. Required if a local IP is not
   // provided to begin.
