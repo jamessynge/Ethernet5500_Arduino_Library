@@ -1,13 +1,12 @@
-#ifndef SRC_ETHERNETCLIENT_H
-#define SRC_ETHERNETCLIENT_H
-#include <Arduino.h>	
-#include <Print.h>
+#ifndef ETHERNET5500_SRC_ETHERNETCLIENT_H_
+#define ETHERNET5500_SRC_ETHERNETCLIENT_H_
+#include <Arduino.h>
 #include <Client.h>
 #include <IPAddress.h>
+#include <Print.h>
 
 class EthernetClient : public Client {
-
-public:
+ public:
   EthernetClient();
   EthernetClient(uint8_t sock);
 
@@ -26,8 +25,10 @@ public:
   virtual operator bool();
   virtual bool operator==(const bool value) { return bool() == value; }
   virtual bool operator!=(const bool value) { return bool() != value; }
-  virtual bool operator==(const EthernetClient&);
-  virtual bool operator!=(const EthernetClient& rhs) { return !this->operator==(rhs); };
+  virtual bool operator==(const EthernetClient &);
+  virtual bool operator!=(const EthernetClient &rhs) {
+    return !this->operator==(rhs);
+  }
   uint8_t getSocketNumber() const;
 
   // Return the IP address of the host who sent the current incoming packet
@@ -43,12 +44,12 @@ public:
   virtual bool getNoDelayedACK();
 
   friend class EthernetServer;
-  
+
   using Print::write;
 
-private:
+ private:
   static uint16_t _srcport;
   uint8_t _sock;
 };
 
-#endif // SRC_ETHERNETCLIENT_H
+#endif  // ETHERNET5500_SRC_ETHERNETCLIENT_H_
