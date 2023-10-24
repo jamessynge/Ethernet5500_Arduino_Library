@@ -1,5 +1,5 @@
-#include "utility/w5500.h"
 #include "utility/socket.h"
+#include "utility/w5500.h"
 extern "C" {
 #include "string.h"
 }
@@ -8,13 +8,9 @@ extern "C" {
 #include "EthernetClient.h"
 #include "EthernetServer.h"
 
-EthernetServer::EthernetServer(uint16_t port)
-{
-  _port = port;
-}
+EthernetServer::EthernetServer(uint16_t port) { _port = port; }
 
-void EthernetServer::begin()
-{
+void EthernetServer::begin() {
   for (int sock = 0; sock < MAX_SOCK_NUM; sock++) {
     EthernetClient client(sock);
     if (client.status() == SnSR::CLOSED) {
@@ -26,8 +22,7 @@ void EthernetServer::begin()
   }
 }
 
-void EthernetServer::accept()
-{
+void EthernetServer::accept() {
   int listening = 0;
 
   for (int sock = 0; sock < MAX_SOCK_NUM; sock++) {
@@ -36,8 +31,7 @@ void EthernetServer::accept()
     if (EthernetClass::_server_port[sock] == _port) {
       if (client.status() == SnSR::LISTEN) {
         listening = 1;
-      }
-      else if (client.status() == SnSR::CLOSE_WAIT && !client.available()) {
+      } else if (client.status() == SnSR::CLOSE_WAIT && !client.available()) {
         client.stop();
       }
     }
@@ -48,8 +42,7 @@ void EthernetServer::accept()
   }
 }
 
-EthernetClient EthernetServer::available()
-{
+EthernetClient EthernetServer::available() {
   accept();
 
   for (int sock = 0; sock < MAX_SOCK_NUM; sock++) {
@@ -67,13 +60,9 @@ EthernetClient EthernetServer::available()
   return EthernetClient(MAX_SOCK_NUM);
 }
 
-size_t EthernetServer::write(uint8_t b)
-{
-  return write(&b, 1);
-}
+size_t EthernetServer::write(uint8_t b) { return write(&b, 1); }
 
-size_t EthernetServer::write(const uint8_t *buffer, size_t size)
-{
+size_t EthernetServer::write(const uint8_t *buffer, size_t size) {
   size_t n = 0;
 
   accept();
@@ -82,7 +71,7 @@ size_t EthernetServer::write(const uint8_t *buffer, size_t size)
     EthernetClient client(sock);
 
     if (EthernetClass::_server_port[sock] == _port &&
-      client.status() == SnSR::ESTABLISHED) {
+        client.status() == SnSR::ESTABLISHED) {
       n += client.write(buffer, size);
     }
   }

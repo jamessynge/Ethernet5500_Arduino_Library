@@ -14,16 +14,16 @@
 
  */
 
-#include <SPI.h>
 #include <Ethernet5500.h>
+#include <SPI.h>
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 // if you don't want to use DNS (and reduce your sketch size)
 // use the numeric IP instead of the name for the server:
-//IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
-char server[] = "www.google.com";    // name address for Google (using DNS)
+// IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
+char server[] = "www.google.com";  // name address for Google (using DNS)
 
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192, 168, 0, 177);
@@ -37,7 +37,7 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+    ;  // wait for serial port to connect. Needed for Leonardo only
   }
 
   // start the Ethernet connection:
@@ -59,15 +59,13 @@ void setup() {
     client.println("Host: www.google.com");
     client.println("Connection: close");
     client.println();
-  }
-  else {
+  } else {
     // kf you didn't get a connection to the server:
     Serial.println("connection failed");
   }
 }
 
-void loop()
-{
+void loop() {
   // if there are incoming bytes available
   // from the server, read them and print them:
   if (client.available()) {
@@ -82,7 +80,7 @@ void loop()
     client.stop();
 
     // do nothing forevermore:
-    while (true);
+    while (true)
+      ;
   }
 }
-

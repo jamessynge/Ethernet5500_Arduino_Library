@@ -25,28 +25,23 @@
 // the sensor communicates using SPI, so include the library:
 #include <SPI.h>
 
-
 // assign a MAC address for the ethernet controller.
 // fill in your address here:
-byte mac[] = {
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
-};
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 // assign an IP address for the controller:
 IPAddress ip(192, 168, 1, 20);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 255, 0);
-
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use
 // (port 80 is default for HTTP):
 EthernetServer server(80);
 
-
-//Sensor's memory register addresses:
-const int PRESSURE = 0x1F;      //3 most significant bits of pressure
-const int PRESSURE_LSB = 0x20;  //16 least significant bits of pressure
-const int TEMPERATURE = 0x21;   //16 bit temperature reading
+// Sensor's memory register addresses:
+const int PRESSURE = 0x1F;      // 3 most significant bits of pressure
+const int PRESSURE_LSB = 0x20;  // 16 least significant bits of pressure
+const int TEMPERATURE = 0x21;   // 16 bit temperature reading
 
 // pins used for the connection with the sensor
 // the others you need are controlled by the SPI library):
@@ -71,7 +66,7 @@ void setup() {
 
   Serial.begin(9600);
 
-  //Configure SCP1000 for low noise configuration:
+  // Configure SCP1000 for low noise configuration:
   writeRegister(0x02, 0x2D);
   writeRegister(0x01, 0x03);
   writeRegister(0x03, 0x02);
@@ -79,9 +74,8 @@ void setup() {
   // give the sensor and Ethernet shield time to set up:
   delay(1000);
 
-  //Set the sensor to high resolution mode tp start readings:
+  // Set the sensor to high resolution mode tp start readings:
   writeRegister(0x03, 0x0A);
-
 }
 
 void loop() {
@@ -100,22 +94,21 @@ void loop() {
   listenForEthernetClients();
 }
 
-
 void getData() {
   Serial.println("Getting reading");
-  //Read the temperature data
+  // Read the temperature data
   int tempData = readRegister(0x21, 2);
 
   // convert the temperature to celsius and display it:
   temperature = (float)tempData / 20.0;
 
-  //Read the pressure data highest 3 bits:
-  byte  pressureDataHigh = readRegister(0x1F, 1);
-  pressureDataHigh &= 0b00000111; //you only needs bits 2 to 0
+  // Read the pressure data highest 3 bits:
+  byte pressureDataHigh = readRegister(0x1F, 1);
+  pressureDataHigh &= 0b00000111;  // you only needs bits 2 to 0
 
-  //Read the pressure data lower 16 bits:
+  // Read the pressure data lower 16 bits:
   unsigned int pressureDataLow = readRegister(0x20, 2);
-  //combine the two parts into one 19-bit number:
+  // combine the two parts into one 19-bit number:
   pressure = ((pressureDataHigh << 16) | pressureDataLow) / 4;
 
   Serial.print("Temperature: ");
@@ -156,8 +149,7 @@ void listenForEthernetClients() {
         if (c == '\n') {
           // you're starting a new line
           currentLineIsBlank = true;
-        }
-        else if (c != '\r') {
+        } else if (c != '\r') {
           // you've gotten a character on the current line
           currentLineIsBlank = false;
         }
@@ -170,36 +162,34 @@ void listenForEthernetClients() {
   }
 }
 
-
-//Send a write command to SCP1000
+// Send a write command to SCP1000
 void writeRegister(byte registerName, byte registerValue) {
   // SCP1000 expects the register name in the upper 6 bits
   // of the byte:
   registerName <<= 2;
   // command (read or write) goes in the lower two bits:
-  registerName |= 0b00000010; //Write command
+  registerName |= 0b00000010;  // Write command
 
   // take the chip select low to select the device:
   digitalWrite(chipSelectPin, LOW);
 
-  SPI.transfer(registerName); //Send register location
-  SPI.transfer(registerValue); //Send value to record into register
+  SPI.transfer(registerName);   // Send register location
+  SPI.transfer(registerValue);  // Send value to record into register
 
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
 }
 
-
-//Read register from the SCP1000:
+// Read register from the SCP1000:
 unsigned int readRegister(byte registerName, int numBytes) {
-  byte inByte = 0;           // incoming from  the SPI read
-  unsigned int result = 0;   // result to return
+  byte inByte = 0;          // incoming from  the SPI read
+  unsigned int result = 0;  // result to return
 
   // SCP1000 expects the register name in the upper 6 bits
   // of the byte:
-  registerName <<=  2;
+  registerName <<= 2;
   // command (read or write) goes in the lower two bits:
-  registerName &= 0b11111100; //Read command
+  registerName &= 0b11111100;  // Read command
 
   // take the chip select low to select the device:
   digitalWrite(chipSelectPin, LOW);
@@ -219,5 +209,5 @@ unsigned int readRegister(byte registerName, int numBytes) {
   // take the chip select high to de-select:
   digitalWrite(chipSelectPin, HIGH);
   // return the result:
-  return(result);
+  return (result);
 }

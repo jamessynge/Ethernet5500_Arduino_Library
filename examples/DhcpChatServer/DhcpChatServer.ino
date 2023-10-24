@@ -18,31 +18,29 @@
 
  */
 
-#include <SPI.h>
 #include <Ethernet5500.h>
+#include <SPI.h>
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network.
 // gateway and subnet are optional:
-byte mac[] = {
-  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02
-};
+byte mac[] = {0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02};
 IPAddress ip(192, 168, 1, 177);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
 
 // telnet defaults to port 23
 EthernetServer server(23);
-boolean gotAMessage = false; // whether or not you got a message from the client yet
+boolean gotAMessage =
+    false;  // whether or not you got a message from the client yet
 
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   // this check is only needed on the Leonardo:
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+    ;  // wait for serial port to connect. Needed for Leonardo only
   }
-
 
   // start the Ethernet connection:
   Serial.println("Trying to get an IP address using DHCP");
@@ -62,7 +60,6 @@ void setup() {
   Serial.println();
   // start listening for clients
   server.begin();
-
 }
 
 void loop() {

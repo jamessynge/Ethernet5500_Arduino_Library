@@ -14,14 +14,12 @@
 
  */
 
-#include <SPI.h>
 #include <Ethernet5500.h>
+#include <SPI.h>
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
-byte mac[] = {
-  0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02
-};
+byte mac[] = {0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02};
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server
@@ -33,7 +31,7 @@ void setup() {
   Serial.begin(9600);
   // this check is only needed on the Leonardo:
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+    ;  // wait for serial port to connect. Needed for Leonardo only
   }
 
   // start the Ethernet connection:
@@ -53,8 +51,4 @@ void setup() {
   Serial.println();
 }
 
-void loop() {
-
-}
-
-
+void loop() {}

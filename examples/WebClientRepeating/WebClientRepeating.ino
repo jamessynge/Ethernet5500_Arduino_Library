@@ -22,14 +22,12 @@
 
  */
 
-#include <SPI.h>
 #include <Ethernet5500.h>
+#include <SPI.h>
 
 // assign a MAC address for the ethernet controller.
 // fill in your address here:
-byte mac[] = {
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
-};
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 // fill in an available IP address on your network here,
 // for manual configuration:
 IPAddress ip(192, 168, 1, 177);
@@ -45,17 +43,19 @@ IPAddress myDns(1, 1, 1, 1);
 EthernetClient client;
 
 char server[] = "www.arduino.cc";
-//IPAddress server(64,131,82,241);
+// IPAddress server(64,131,82,241);
 
-unsigned long lastConnectionTime = 0;             // last time you connected to the server, in milliseconds
-const unsigned long postingInterval = 10L * 1000L; // delay between updates, in milliseconds
+unsigned long lastConnectionTime =
+    0;  // last time you connected to the server, in milliseconds
+const unsigned long postingInterval =
+    10L * 1000L;  // delay between updates, in milliseconds
 // the "L" is needed to use long type numbers
 
 void setup() {
   // start serial port:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
+    ;  // wait for serial port to connect. Needed for Leonardo only
   }
 
   // give the ethernet module time to boot up:
@@ -81,7 +81,6 @@ void loop() {
   if (millis() - lastConnectionTime > postingInterval) {
     httpRequest();
   }
-
 }
 
 // this method makes a HTTP connection to the server:
@@ -102,8 +101,7 @@ void httpRequest() {
 
     // note the time that the connection was made:
     lastConnectionTime = millis();
-  }
-  else {
+  } else {
     // if you couldn't make a connection:
     Serial.println("connection failed");
   }
