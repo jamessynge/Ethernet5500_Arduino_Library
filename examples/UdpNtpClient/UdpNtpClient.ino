@@ -41,15 +41,15 @@ void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
-    ;  // wait for serial port to connect. Needed for Leonardo only
+    // wait for serial port to connect. Needed for Leonardo only
   }
 
   // start Ethernet and UDP
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // no point in carrying on, so do nothing forevermore:
-    for (;;)
-      ;
+    for (;;) {
+    }
   }
   Udp.begin(localPort);
 }
@@ -63,23 +63,23 @@ void loop() {
     // We've received a packet, read the data from it
     Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read the packet into the buffer
 
-    // the timestamp starts at byte 40 of the received packet and is four bytes,
-    //  or two words, long. First, esxtract the two words:
+    // The timestamp starts at byte 40 of the received packet and is four bytes,
+    // or two words, long. First, extract the two words:
 
-    unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
-    unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
+    uint32_t highWord = word(packetBuffer[40], packetBuffer[41]);
+    uint32_t lowWord = word(packetBuffer[42], packetBuffer[43]);
     // combine the four bytes (two words) into a long integer
     // this is NTP time (seconds since Jan 1 1900):
-    unsigned long secsSince1900 = highWord << 16 | lowWord;
+    uint32_t secsSince1900 = highWord << 16 | lowWord;
     Serial.print("Seconds since Jan 1 1900 = ");
     Serial.println(secsSince1900);
 
     // now convert NTP time into everyday time:
     Serial.print("Unix time = ");
     // Unix time starts on Jan 1 1970. In seconds, that's 2208988800:
-    const unsigned long seventyYears = 2208988800UL;
+    const uint32_t seventyYears = 2208988800UL;
     // subtract seventy years:
-    unsigned long epoch = secsSince1900 - seventyYears;
+    uint32_t epoch = secsSince1900 - seventyYears;
     // print Unix time:
     Serial.println(epoch);
 
@@ -107,7 +107,7 @@ void loop() {
 }
 
 // send an NTP request to the time server at the given address
-unsigned long sendNTPpacket(char* address) {
+void sendNTPpacket(char* address) {
   // set all bytes in the buffer to 0
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   // Initialize values needed to form NTP request

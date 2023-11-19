@@ -41,9 +41,7 @@ void W5500Class::init(uint8_t socketNumbers, uint8_t ss_pin) {
     uint8_t cntl_byte = (0x0C + (0 << 5));
     write(0x1E, cntl_byte, 16);  // 0x1E - Sn_RXBUF_SIZE
     write(0x1F, cntl_byte, 16);  // 0x1F - Sn_TXBUF_SIZE
-  }
-
-  else if (socketNumbers == 2) {
+  } else if (socketNumbers == 2) {
     for (int i = 2; i < MAX_SOCK_NUM; i++) {
       uint8_t cntl_byte = (0x0C + (i << 5));
       write(0x1E, cntl_byte, 0);  // 0x1E - Sn_RXBUF_SIZE
@@ -54,9 +52,7 @@ void W5500Class::init(uint8_t socketNumbers, uint8_t ss_pin) {
       write(0x1E, cntl_byte, 8);  // 0x1E - Sn_RXBUF_SIZE
       write(0x1F, cntl_byte, 8);  // 0x1F - Sn_TXBUF_SIZE
     }
-  }
-
-  else if (socketNumbers == 4) {
+  } else if (socketNumbers == 4) {
     for (int i = 4; i < MAX_SOCK_NUM; i++) {
       uint8_t cntl_byte = (0x0C + (i << 5));
       write(0x1E, cntl_byte, 0);  // 0x1E - Sn_RXBUF_SIZE
@@ -67,9 +63,7 @@ void W5500Class::init(uint8_t socketNumbers, uint8_t ss_pin) {
       write(0x1E, cntl_byte, 4);  // 0x1E - Sn_RXBUF_SIZE
       write(0x1F, cntl_byte, 4);  // 0x1F - Sn_TXBUF_SIZE
     }
-  }
-
-  else {
+  } else {
     for (int i = 0; i < MAX_SOCK_NUM; i++) {
       uint8_t cntl_byte = (0x0C + (i << 5));
       write(0x1E, cntl_byte, 2);  // 0x1E - Sn_RXBUF_SIZE
@@ -193,8 +187,8 @@ void W5500Class::execCmdSn(SOCKET s, SockCMD _cmd) {
   // Send command to socket
   writeSnCR(s, _cmd);
   // Wait for command to complete
-  while (readSnCR(s))
-    ;
+  while (readSnCR(s)) {
+  }
 }
 
 uint8_t W5500Class::readVersion(void) {

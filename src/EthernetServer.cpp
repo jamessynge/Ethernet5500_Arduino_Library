@@ -1,6 +1,9 @@
 #include "utility/socket.h"
 #include "utility/w5500.h"
+
 extern "C" {
+// TODO(jamessynge): Determine if this should be <string.h>, or if the include
+// is needed at all (I can't see a need for it so far).
 #include "string.h"
 }
 

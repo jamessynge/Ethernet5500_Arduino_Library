@@ -43,9 +43,7 @@ void EthernetClass::hardreset() {
 #if defined(WIZ550io_WITH_MACADDRESS)
 
 int EthernetClass::begin(void) {
-  uint8_t mac_address[6] = {
-      0,
-  };
+  uint8_t mac_address[6] = {0, 0, 0, 0, 0, 0};
   if (_dhcp == nullptr) {
     _dhcp = new DhcpClass();
   }

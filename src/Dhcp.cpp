@@ -97,8 +97,9 @@ int DhcpClass::request_DHCP_lease() {
         }
         _renewInSec = _dhcpT1;
         _rebindInSec = _dhcpT2;
-      } else if (messageType == DHCP_NAK)
+      } else if (messageType == DHCP_NAK) {
         _dhcp_state = STATE_DHCP_START;
+      }
     }
 
     if (messageType == 255) {

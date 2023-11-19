@@ -80,8 +80,8 @@ uint8_t connect(SOCKET s, uint8_t *addr, uint16_t port) {
 }
 
 /**
- * @brief	This function used for disconnect the socket and parameter is "s"
- * which represent the socket number
+ * @brief	This function used for disconnect the socket and parameter is
+ * "s" which represent the socket number
  * @return	1 for success else 0.
  */
 void disconnect(SOCKET s) { w5500.execCmdSn(s, Sock_DISCON); }
@@ -172,8 +172,8 @@ uint16_t peek(SOCKET s, uint8_t *buf) {
 }
 
 /**
- * @brief	This function is an application I/F function which is used to send
- * the data for other then TCP mode. Unlike TCP transmission, The peer's
+ * @brief	This function is an application I/F function which is used to
+ * send the data for other then TCP mode. Unlike TCP transmission, The peer's
  * destination address and the port is needed.
  *
  * @return	This function return send data size for success else -1.
