@@ -80,7 +80,6 @@ void loop() {
     Serial.println("disconnecting.");
     client.stop();
     // do nothing:
-    while (true)
-      ;
+    while (true);
   }
 }
